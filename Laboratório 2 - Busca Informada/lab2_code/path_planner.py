@@ -112,7 +112,7 @@ class PathPlanner(object):
         heapq.heappush(pq, (start_node.distance_to(*goal_position), start_node))    # Heurística
 
         while pq:
-            f, node = heapq.heappop(pq)
+            h, node = heapq.heappop(pq)
             node.closed = True
 
             # Goal Node finded
@@ -122,12 +122,12 @@ class PathPlanner(object):
             # Try every successors
             for successor in self.node_grid.get_successors(*node.get_position()):
                 successor_node = self.node_grid.get_node(successor[0], successor[1])
-                if not successor_node.closed:
-                    h = successor_node.distance_to(*goal_position)   # Heurística
-                    #edge_cost = self.cost_map.get_edge_cost(node.get_position(), successor_node.get_position())
-                    #successor_node.f = f + edge_cost
+                successor_h = successor_node.distance_to(*goal_position)   # Heurística
+                if successor_h < h and not successor_node.closed:
+                    edge_cost = self.cost_map.get_edge_cost(node.get_position(), successor_node.get_position())
+                    successor_node.f = node.f + edge_cost
                     successor_node.parent = node
-                    heapq.heappush(pq, (h, successor_node))
+                    heapq.heappush(pq, (successor_h, successor_node))
 
 		# The first return is the path as sequence of tuples (as returned by the method construct_path())
 		# The second return is the cost of the path

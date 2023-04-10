@@ -18,7 +18,7 @@ num_iterations = 100  # Monte Carlo
 
 # Plot options
 save_fig = False  # if the figure will be used to the hard disk
-show_fig = True  # if the figure will be shown in the screen
+show_fig = False  # if the figure will be shown in the screen
 fig_format = 'png'
 # Recommended figure formats: .eps for Latex/Linux, .svg for MS Office, and .png for easy visualization in Windows.
 # The quality of .eps and .svg is far superior since these are vector graphics formats.
@@ -114,7 +114,20 @@ for i in range(num_iterations):
     plot_path(cost_map, start_position, goal_position, path, '%s_%d' % (algorithm, i), save_fig, show_fig, fig_format)
 
 
+import math
 # Print Monte Carlo statistics
 print(r'Compute time: mean: {0}, std: {1}'.format(np.mean(times), np.std(times)))
 if not (inf in costs):
     print(r'Cost: mean: {0}, std: {1}'.format(np.mean(costs), np.std(costs)))
+else:
+    n = sum = std = 0
+    for cost in costs:
+        if cost != inf:
+            sum += cost[0]
+            n += 1
+    mean = sum/n
+    for cost in costs:
+        if cost != inf:
+            std += (cost[0] - mean)**2
+    std = math.sqrt(std/n)
+    print(r'Cost: mean: {0}, std: {1}'.format(mean, std))
